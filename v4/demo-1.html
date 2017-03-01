@@ -1,0 +1,33 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>HelloWorld</title>
+</head>
+<body>
+<p>Hello World 1</p>
+<p>Hello World 2</p>
+<div class="u-box-1">
+    It is new life!
+</div>
+<div class="u-box-2">
+    <span class="u-txt-2">css样式选择！</span>
+</div>
+<script src="d3-4.5.0/d3.js" charset="utf-8"></script>
+<script>
+//    d3.select("body").selectAll("p").text("www.ourd3js.com");
+    d3.select("body").selectAll("p").text("hello arvin");
+//选择<body>中所有的<p>，其文本内容为 www.ourd3js.com，选择集保存在变量 p 中
+var p = d3.select("body")
+        .selectAll("p")
+        .text("hello arvin");
+//修改段落的颜色和字体大小
+p.style("color","red")
+        .style("font-size","72px");
+
+var box=d3.select('.u-box-1').text("It is a new life!");
+    box.style('color','black').style('font-size','80px');
+
+var txt=d3.select('.u-box-2 .u-txt-2').style('color','yellow').style('font-size','90px');
+</script>
+</body>
+</html>

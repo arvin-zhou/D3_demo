@@ -1,0 +1,140 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>完整的柱状图</title>
+    <link rel="stylesheet" href="reset.css">
+</head>
+<body>
+
+<script src="d3-4.5.0/d3.js" charset="utf-8"></script>
+<script>
+    var width=400;
+    var height=400;
+    var svg=d3.select('body')
+            .append('svg')
+            .attr('width',width)
+            .attr('height',height);
+    var padding={left:30,right:30,top:20,bottom:20};
+
+    var dataset = [10, 20, 30, 40, 33, 24, 12, 5];  //数据（表示矩形的宽度）
+    //x轴的比例尺
+    var xScale=d3.scaleBand()
+            .domain(d3.range(dataset.length))
+            .range([0,width-padding.left-padding.right]);
+    //y轴的比例尺
+    var yScale=d3.scaleLinear()
+            .domain([0,d3.max(dataset)])
+            .range([height-padding.top-padding.bottom,0]);
+    var index = [0, 1, 2, 3, 4];
+    var color = ["red", "steelblue", "green", "yellow", "#66b702"];
+    var ordinalColor=d3.scaleOrdinal()
+            .domain(index)
+            .range(color);
+    //定义x轴
+    var xAxis=d3.axisBottom(xScale);
+    //定义y轴
+    var yAxis=d3.axisLeft(yScale);
+
+    //矩形之间的空白
+    var rectPadding = 6;
+
+    //添加矩形元素
+    var rects = svg.selectAll(".MyRect")
+            .data(dataset)
+            .enter()
+            .append("rect")
+            .attr("class","MyRect")
+            .attr("transform","translate(" + padding.left + "," + padding.top + ")")
+            .attr("x", function(d,i){
+                return xScale(i) + rectPadding/2;
+            } )
+            .attr("y",function(d){
+                return yScale(d);
+            })
+            .attr("width",xScale.bandwidth() - rectPadding )
+//            .attr("height", function(d){
+//                return height - padding.top - padding.bottom - yScale(d);
+//            })
+            .attr('fill',function (d,i) {
+                return ordinalColor(i);
+            })
+            .attr("y",function(d){
+                var min = yScale.domain()[0];
+                return yScale(min);
+            })
+            .on("mouseover",function(d,i){
+                d3.select(this)
+                        .attr("fill","yellow");
+            })
+            .on("mouseout",function(d,i){
+                d3.select(this)
+                        .transition()
+                        .duration(500)
+                        .attr("fill","steelblue");
+            })
+            .transition()
+            .delay(function(d,i){
+                return i * 200;
+            })
+            .duration(2000)
+            .attr("y",function(d){
+                return yScale(d);
+            })
+            .attr("height", function(d){
+                return height - padding.top - padding.bottom - yScale(d);
+            })
+            //同时变换颜色
+            .delay(function (d,i) {
+                return 200*i;
+            })
+            .attr("fill",function (d,i) {
+                if(i==4){
+                    return ordinalColor(0);
+                }else{
+                    return ordinalColor(i+1);
+                }
+
+            });
+
+
+
+      //添加文字元素
+    var texts = svg.selectAll(".MyText")
+            .data(dataset)
+            .enter()
+            .append("text")
+//            .attr("text-anchor","middle")
+            .attr("class","MyText")
+            .attr("transform","translate(" + padding.left + "," + padding.top + ")")
+            .attr("x", function(d,i){
+                return xScale(i) - rectPadding/2;
+            } )
+            .attr("y",function(d){
+                return yScale(d);
+            })
+            .attr("dx",function(){
+                return (xScale.bandwidth() - rectPadding)/2
+            })
+            .attr("dy",function(d){
+                return -5;
+            })
+            .attr('fill','#795548')
+            .style('opacity','0')
+            .transition()
+            .duration(5000)
+            .style('opacity','1')
+            .text(function(d){
+                return d;
+            });
+    //添加x轴
+    svg.append("g")
+            .attr("transform","translate(" + padding.left + "," + (height - padding.bottom) + ")")
+            .call(xAxis);
+
+    //添加y轴
+    svg.append("g")
+            .attr("transform","translate(" + padding.left + "," + padding.top + ")")
+            .call(yAxis);
+</script>
+</body>
+</html>
